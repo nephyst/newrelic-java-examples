@@ -22,6 +22,7 @@ import static org.apache.kafka.clients.producer.ProducerConfig.BOOTSTRAP_SERVERS
 import static org.apache.kafka.clients.producer.ProducerConfig.BUFFER_MEMORY_CONFIG;
 import static org.apache.kafka.clients.producer.ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG;
 import static org.apache.kafka.clients.producer.ProducerConfig.LINGER_MS_CONFIG;
+import static org.apache.kafka.clients.producer.ProducerConfig.METRIC_REPORTER_CLASSES_CONFIG;
 import static org.apache.kafka.clients.producer.ProducerConfig.RETRIES_CONFIG;
 import static org.apache.kafka.clients.producer.ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG;
 
@@ -36,7 +37,7 @@ public class Application {
     @Bean
     public static ProducerFactory<String, String> producerFactory() {
         Map<String, Object> config = new HashMap<>();
-        config.put(BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        config.put(BOOTSTRAP_SERVERS_CONFIG, "localhost:29092");
         config.put(ACKS_CONFIG, "all");
         config.put(RETRIES_CONFIG, 0);
         config.put(BATCH_SIZE_CONFIG, 16384);

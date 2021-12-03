@@ -14,10 +14,12 @@ import com.newrelic.api.agent.TransportType;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.header.Header;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.kafka.core.ConsumerFactory;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
@@ -33,6 +35,9 @@ public class KafkaConsumer implements CommandLineRunner {
     @Autowired
     private ConsumerFactory<String, String> consumerFactory;
 
+    @Autowired
+    private KafkaTemplate<String, String> producer;
+
     @Override
     public void run(String... args) throws Exception {
         Consumer<String, String> consumer = consumerFactory.createConsumer();
@@ -42,6 +47,7 @@ public class KafkaConsumer implements CommandLineRunner {
             ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
             for (ConsumerRecord<String, String> record : records) {
                 processRecord(record);
+                produce(record.value());
             }
         }
     }
@@ -60,6 +66,17 @@ public class KafkaConsumer implements CommandLineRunner {
                 consumerRecord.offset());
 
         acceptDistributedTraceHeadersFromKafkaRecord(consumerRecord);
+
+    }
+
+    private void produce(String value) {
+        ProducerRecord<String, String> producerRecord = new ProducerRecord<>("example-topic", "example-key-" + value, "example-value-" + value);
+        producer.send(producerRecord);
+
+        String publishedRecordMessage = String.format("%nPublished Kafka Record:%n\ttopic = %s, key = %s, value = %s%n", producerRecord.topic(),
+                producerRecord.key(), producerRecord.value());
+
+        System.out.println(publishedRecordMessage);
     }
 
     /**

@@ -61,7 +61,7 @@ public class Controller {
         // ConcurrentHashMapHeaders provides a concrete implementation of com.newrelic.api.agent.Headers
         Headers distributedTraceHeaders = ConcurrentHashMapHeaders.build(HeaderType.MESSAGE);
         // Generate W3C Trace Context headers and insert them into the distributedTraceHeaders map
-        NewRelic.getAgent().getTransaction().insertDistributedTraceHeaders(distributedTraceHeaders);
+        //NewRelic.getAgent().getTransaction().insertDistributedTraceHeaders(distributedTraceHeaders);
 
         // Retrieve the generated W3C Trace Context headers and insert them into the ProducerRecord headers
         if (distributedTraceHeaders.containsHeader(W3C_TRACE_PARENT)) {
